@@ -40,7 +40,7 @@ the puzzle.
 
 `backwards` (boolean)
 
-Defaults to `true`.  Determines whether words can be placed backwards on
+Defaults to `true`.  Enable or disable words placed backwards on
 the puzzle.
 
 `width` and `height` (integer)
