@@ -36,6 +36,8 @@ function generate(options) {
     }
     if (options.diagonals == null)
         options.diagonals = true;
+    if (options.backwards == null)
+        options.backwards = true;
     if (options.minLength == null)
         options.minLength = defaultMinLength;
     if (options.maxLength != null && options.maxLength < options.minLength)
@@ -57,7 +59,7 @@ function generate(options) {
     // console.info(`minimum word length: ${options.minLength}`);
     // console.info(`maximum word length: ${options.maxLength}`);
     // console.info(`effort: ${effort}`);
-    var width = options.width, height = options.height, diagonals = options.diagonals;
+    var width = options.width, height = options.height, diagonals = options.diagonals, backwards = options.backwards;
     var grid = [];
     var used = [];
     var usedMap = {};
@@ -73,6 +75,15 @@ function generate(options) {
     else {
         dxs = [0, 1, 0, -1];
         dys = [-1, 0, 1, 0];
+    }
+    // Filter directions if backwards words are not allowed
+    if (!backwards) {
+        var filteredDirections = dxs.map(function (dx, index) { return ({
+            dx: dx,
+            dy: dys[index]
+        }); }).filter(function (direction) { return direction.dx >= 0 && !(direction.dx === 0 && direction.dy < 0); });
+        dxs = filteredDirections.map(function (direction) { return direction.dx; });
+        dys = filteredDirections.map(function (direction) { return direction.dy; });
     }
     function rand(max) {
         return Math.floor(Math.random() * max);

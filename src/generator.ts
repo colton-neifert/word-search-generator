@@ -1,6 +1,7 @@
 interface Options {
     words?: string[];
     diagonals?: boolean;
+    backwards?: boolean;
     minLength?: number;
     maxLength?: number;
     width?: number;
@@ -45,11 +46,13 @@ export function generate(options?: Options): WordSearch {
         options = {};
     if (options.words == null) {
         var fs = require("fs");
-        options.words = fs.readFileSync(__dirname + "/../data/words-gsl.txt", "utf-8") 
+        options.words = fs.readFileSync(__dirname + "/../data/words-gsl.txt", "utf-8")
             .split(/\r?\n/);
     }
     if (options.diagonals == null)
         options.diagonals = true;
+    if (options.backwards == null)
+        options.backwards = true;
     if (options.minLength == null)
         options.minLength = defaultMinLength;
     if (options.maxLength != null && options.maxLength < options.minLength)
@@ -62,7 +65,7 @@ export function generate(options?: Options): WordSearch {
     }
     if (options.height == null)
         options.height = options.width;
-    let words = options.words.slice() 
+    let words = options.words.slice()
         .filter((w) => w.length >= options.minLength && (options.maxLength == null || w.length <= options.maxLength))
         .filter((w) => /^[a-z]*/.test(w));
     // console.info(`${words.length} words`);
@@ -72,7 +75,7 @@ export function generate(options?: Options): WordSearch {
     // console.info(`maximum word length: ${options.maxLength}`);
     // console.info(`effort: ${effort}`);
 
-    let {width, height, diagonals} = options;
+    let {width, height, diagonals, backwards} = options;
 
     let grid: string[] = [];
     let used: string[] = [];
@@ -89,6 +92,17 @@ export function generate(options?: Options): WordSearch {
     } else {
         dxs = [0, 1, 0, -1];
         dys = [-1, 0, 1, 0];
+    }
+
+    // Filter directions if backwards words are not allowed
+    if (!backwards) {
+        const filteredDirections = dxs.map((dx, index) => ({
+            dx,
+            dy: dys[index]
+        })).filter(direction => direction.dx >= 0 && !(direction.dx === 0 && direction.dy < 0));
+
+        dxs = filteredDirections.map(direction => direction.dx);
+        dys = filteredDirections.map(direction => direction.dy);
     }
 
     function rand(max: number) {

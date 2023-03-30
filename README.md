@@ -38,6 +38,11 @@ The generator function takes an optional options object, with these options:
 Defaults to `true`.  Determines whether words can be placed diagonally on
 the puzzle.
 
+`backwards` (boolean)
+
+Defaults to `true`.  Determines whether words can be placed backwards on
+the puzzle.
+
 `width` and `height` (integer)
 
 Defaults to 10x10.  Sets the size of the puzzle.
@@ -45,7 +50,7 @@ Defaults to 10x10.  Sets the size of the puzzle.
 `minLength` and `maxLength` (integer)
 
 Useful for making sure the words aren't too short or too long.  The default
-for `minLength` is 3, and for `maxLength` is undefined. 
+for `minLength` is 3, and for `maxLength` is undefined.
 
 `words` (array of strings)
 
